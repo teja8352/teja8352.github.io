@@ -42,7 +42,7 @@ class Instamojo
     }
 }
 
-$instamojo = new Instamojo("QfqtXdr7RjEroOBa8VWRSaBLhHU0Nx6tsXPgdZrd", "HfHzZEPz4CMPJsJ2qjsAdAHsdJJUHTgUAxfsq1QDWvPKcEEOT4yx6qOutsjg2oQ8FUHF9K9CDUQlCl4EQ49iLbLp2gLujNHdTJ2ClZUy8maCgS7XxTW2ZvnhYL2Fd3wX");
+$instamojo = new Instamojo("productionQfqtXdr7RjEroOBa8VWRSaBLhHU0Nx6tsXPgdZrd", "HfHzZEPz4CMPJsJ2qjsAdAHsdJJUHTgUAxfsq1QDWvPKcEEOT4yx6qOutsjg2oQ8FUHF9K9CDUQlCl4EQ49iLbLp2gLujNHdTJ2ClZUy8maCgS7XxTW2ZvnhYL2Fd3wX");
 
 echo $instamojo->getToken();
 ?>
