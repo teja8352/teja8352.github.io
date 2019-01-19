@@ -42,7 +42,7 @@ class Instamojo
     }
 }
 
-$instamojo = new Instamojo("5d6fa7e2d2ef404d263c1c59e4331981", "73e5c25e0c8f01c6ef23bd93c1439781");
+$instamojo = new Instamojo("d82016f839e13cd0a79afc0ef5b288b3", "3827881f669c11e8dad8a023fd1108c2");
 
 echo $instamojo->getToken();
 ?>
