@@ -297,10 +297,11 @@ getDifferenceInDates();
 const getTestmonials = () => {
   fetch(_API + 'testimonial')
     .then(resp => {
+      console.log(resp);
       if (resp?.status !== 200 && resp?.ok === false) {
         console.error("Error while getting testimonials::::::\n", resp);
       } else {
-        console.log(resp)
+        console.log(resp);
         testimonialsList = resp;
         let testmonialText = "";
         testimonialsList.forEach(testmonial => {
@@ -369,5 +370,5 @@ async function addTestmonials() {
 
   console.log(content);
 
-  // getTestmonials();
+  getTestmonials();
 };
