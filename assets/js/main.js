@@ -4,25 +4,12 @@
 * Author: BootstrapMade.com
 * License: https://bootstrapmade.com/license/
 */
+
+
+const _API = 'https://wb-be-app.herokuapp.com/';
+
 (function () {
   "use strict";
-
-  /**
-   * Date calucaltor - To get difference from to dates.
-   */
-  const getDifferenceInDates = () => {
-    const years = document.getElementById('years');
-    const fromDate = new Date("02/05/2018");
-    const currentDate = new Date();
-    const differenceInMilliSeconds = Math.abs(currentDate - fromDate);
-    // Comments: For Days
-    const diffInDays = Math.ceil(differenceInMilliSeconds / (1000 * 60 * 60 * 24));
-    // Comments: For Years
-    const diffInYears = differenceInMilliSeconds / (1000 * 60 * 60 * 24 * 30 * 12);
-    years.innerText = (diffInDays / 365).toFixed(1);
-  }
-
-  getDifferenceInDates();
 
   /**
    * Easy selector helper function
@@ -283,4 +270,104 @@
    */
   new PureCounter();
 
-})()
+})();
+
+let testimonialsList = [];
+let testmonialsWrapper = document.getElementById('testmonials-wrapper');  /**
+   * Date calucaltor - To get difference from to dates.
+   */
+const getDifferenceInDates = () => {
+  const years = document.getElementById('years');
+  const fromDate = new Date("02/05/2018");
+  const currentDate = new Date();
+  const differenceInMilliSeconds = Math.abs(currentDate - fromDate);
+  // Comments: For Days
+  const diffInDays = Math.ceil(differenceInMilliSeconds / (1000 * 60 * 60 * 24));
+  // Comments: For Years
+  const diffInYears = differenceInMilliSeconds / (1000 * 60 * 60 * 24 * 30 * 12);
+  years.innerText = (diffInDays / 365).toFixed(1);
+}
+
+getDifferenceInDates();
+
+/**
+ * Testmonials - To write a new testmonials
+ */
+
+const getTestmonials = () => {
+  fetch(_API + 'testimonial')
+    .then(resp => {
+      if (resp?.status !== 200 && resp?.ok === false) {
+        console.error("Error while getting testimonials::::::\n", resp);
+      } else {
+        console.log(resp)
+        testimonialsList = resp;
+        let testmonialText = "";
+        testimonialsList.forEach(testmonial => {
+          const img = testmonial?.img !== undefined && testmonial?.img !== null && testmonial?.img?.length > 0 ? testmonial.img : "assets/img/user.png";
+          testmonialText = testmonialText + `\n\n\n<div class="swiper-slide">
+              <div class="testimonial-item">
+                <img src="${img}" class="testimonial-img" alt="">
+                <h3>${testmonial.name}</h3>
+                <h4>${testmonial.role ? testmonial.role : 'Unknown'}</h4>
+                <p>
+                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
+                  ${testmonial.comment}
+                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+                </p>
+              </div>
+            </div>`;
+        });
+        testmonialsWrapper.innerHTML = testmonialText;
+      }
+    }, err => {
+      console.error("Error while getting testimonials::::::\n", err);
+    }).catch((e) => {
+      console.error("Exception while getting testimonials::::::\n", e);
+    });
+}
+
+const loadTestmonials = () => {
+
+}
+
+getTestmonials();
+
+async function addTestmonials() {
+  let testmonialName = document.getElementById('testimonial-name');
+  let testmonialImg = document.getElementById('testimonial-img');
+  let testmonialComment = document.getElementById('testimonial-comment');
+  if (testmonialName.value === null || testmonialName.value === undefined || testmonialName.value.length <= 0) {
+    alert("Enter your name.");
+    return;
+  }
+
+  if (testmonialComment.value === null || testmonialComment.value === undefined || testmonialComment.value.length <= 0) {
+    alert("Enter your comment.");
+    return;
+  }
+
+  testmonialName.value = "";
+  testmonialImg.value = "";
+  testmonialComment.value = "";
+  let closeBtn = document.getElementById('close');
+  closeBtn.click();
+
+  const rawResponse = await fetch(_API + 'testimonial/add', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: {
+      name: testmonialName.value,
+      img: testmonialImg.value || "",
+      comment: testmonialComment.value
+    }
+  });
+  const content = await rawResponse.json();
+
+  console.log(content);
+
+  // getTestmonials();
+};

@@ -1240,3 +1240,22 @@ section {
   transition: 0.4s;
   border-radius: 50px;
 }
+
+.btn:hover {
+  background: #0678e3;
+  color: #fff;
+}
+
+.btn:active,
+.btn:focus {
+  background: #0563bb;
+  color: #fff;
+}
+
+.testmonial-modal {
+  z-index: 10000 !important;
+}
+
+.modal {
+  --bs-modal-zindex: 9999 !important;
+}
