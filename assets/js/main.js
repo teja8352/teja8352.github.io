@@ -295,15 +295,14 @@ getDifferenceInDates();
  */
 
 const getTestmonials = () => {
-  console.log("hello");
-  fetch(_API + 'testimonial')
+  const url = _API + "testimonial";
+  fetch(url)
+    .then(res => res.json())
     .then(resp => {
-      console.log(resp);
       if (resp?.status !== 200 && resp?.ok === false) {
         console.error("Error while getting testimonials::::::\n", resp);
       } else {
-        console.log(resp);
-        testimonialsList = resp;
+        testimonialsList = resp.data;
         let testmonialText = "";
         testimonialsList.forEach(testmonial => {
           const img = testmonial?.img !== undefined && testmonial?.img !== null && testmonial?.img?.length > 0 ? testmonial.img : "assets/img/user.png";
@@ -335,10 +334,11 @@ const loadTestmonials = () => {
 
 getTestmonials();
 
-async function addTestmonials() {
+function addTestmonials() {
   let testmonialName = document.getElementById('testimonial-name');
   let testmonialImg = document.getElementById('testimonial-img');
   let testmonialComment = document.getElementById('testimonial-comment');
+  let testmonialRole = document.getElementById('testimonial-role');
   if (testmonialName.value === null || testmonialName.value === undefined || testmonialName.value.length <= 0) {
     alert("Enter your name.");
     return;
@@ -348,28 +348,73 @@ async function addTestmonials() {
     alert("Enter your comment.");
     return;
   }
+  const body = {
+    name: testmonialName.value,
+    img: testmonialImg.value || "",
+    comment: testmonialComment.value,
+    role: testmonialRole.value || "Unknown"
+  };
 
-  testmonialName.value = "";
-  testmonialImg.value = "";
-  testmonialComment.value = "";
-  let closeBtn = document.getElementById('close');
-  closeBtn.click();
-
-  const rawResponse = await fetch(_API + 'testimonial/add', {
+  fetch(_API + 'testimonial/add', {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: {
-      name: testmonialName.value,
-      img: testmonialImg.value || "",
-      comment: testmonialComment.value
-    }
-  });
-  const content = await rawResponse.json();
+    body: JSON.stringify(body)
+  }).then(res => res.json()).then(resp => {
 
-  console.log(content);
+    testmonialName.value = "";
+    testmonialImg.value = "";
+    testmonialComment.value = "";
+    testmonialRole.value = "";
 
-  getTestmonials();
+    let closeBtn = document.getElementById('close');
+    closeBtn.click();
+
+    // window.location.reload();
+
+    window.location.replace("https://teja8352.github.io#testimonials");
+  }).catch(e => console.error("Exception while adding testimonial::::::::::\n", e))
+};
+
+function sendMail() {
+  let name = document.getElementById('name');
+  let email = document.getElementById('email');
+  let subject = document.getElementById('subject');
+  let message = document.getElementById('message');
+  const contactUsToast = document.getElementById('contact-us-toast');
+  if (name.value === null || name.value === undefined || name.value.length <= 0) {
+    alert("Enter your name.");
+    return;
+  }
+
+  if (email.value === null || email.value === undefined || email.value.length <= 0) {
+    alert("Enter your email.");
+    return;
+  }
+  const body = {
+    name: name.value,
+    email: email.value,
+    subject: subject.value || "",
+    message: message.value || "",
+  };
+
+  fetch(_API + 'send-mail', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  }).then(res => res.json()).then(resp => {
+    name.value = "";
+    email.value = "";
+    subject.value = "";
+    message.value = "";
+
+    const toast = new bootstrap.Toast(contactUsToast)
+
+    toast.show()
+  }).catch(e => console.error("Exception while adding testimonial::::::::::\n", e))
 };

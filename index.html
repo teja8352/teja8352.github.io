@@ -789,31 +789,6 @@
         <div class="testimonials-slider swiper mb-3" data-aos="fade-up" data-aos-delay="100">
           <div class="swiper-wrapper" id="testmonials-wrapper">
 
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <img src="assets/img/user.png" class="testimonial-img" alt="">
-                <h3>You</h3>
-                <h4>Someone</h4>
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Your comment will come here....
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-              </div>
-            </div>
-
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <img src="assets/img/user.png" class="testimonial-img" alt="">
-                <h3>You</h3>
-                <h4>Someone</h4>
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Your comment will come here....
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-              </div>
-            </div>
 
             <div class="swiper-slide">
               <div class="testimonial-item">
@@ -873,7 +848,7 @@
 
           <div class="col-lg-8 mt-5 mt-lg-0">
 
-            <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+            <form role="form" class="php-email-form">
               <div class="row">
                 <div class="col-md-6 form-group">
                   <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
@@ -886,14 +861,15 @@
                 <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
               </div>
               <div class="form-group mt-3">
-                <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+                <textarea class="form-control" name="message" id="message" rows="5" placeholder="Message"
+                  required></textarea>
               </div>
               <div class="my-3">
                 <div class="loading">Loading</div>
-                <div class="error-message"></div>
+                <div class="error-message d-none"></div>
                 <div class="sent-message">Your message has been sent. Thank you!</div>
               </div>
-              <div class="text-center"><button type="submit">Send Message</button></div>
+              <div class="text-center"><button class="btn" onclick="sendMail()">Send Message</button></div>
             </form>
 
           </div>
@@ -925,6 +901,10 @@
                   placeholder="Your Image Link" required>
               </div>
               <div class="form-group mt-3">
+                <input type="text" class="form-control" name="testimonial-role" id="testimonial-role"
+                  placeholder="Your Role" required>
+              </div>
+              <div class="form-group mt-3">
                 <textarea class="form-control" name="testimonial-comment" id="testimonial-comment" rows="5"
                   placeholder="Comment" required></textarea>
               </div>
@@ -934,6 +914,15 @@
             <button type="button" id="close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button class="btn" id="add-testmonial" onclick="addTestmonials()">Submit</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="contact-us-toast" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body">
+          Hi! There, I will get back to you soon.
         </div>
       </div>
     </div>
