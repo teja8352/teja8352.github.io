@@ -295,6 +295,7 @@ getDifferenceInDates();
  */
 
 const getTestmonials = () => {
+  console.log("hello");
   fetch(_API + 'testimonial')
     .then(resp => {
       console.log(resp);
