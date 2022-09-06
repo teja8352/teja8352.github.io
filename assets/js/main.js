@@ -308,7 +308,7 @@ const getTestmonials = () => {
           const img = testmonial?.img !== undefined && testmonial?.img !== null && testmonial?.img?.length > 0 && (testmonial?.img?.includes('jpeg') || testmonial?.img?.includes('png') || testmonial?.img?.includes('jpg')) ? testmonial.img : "assets/img/user.png";
           testmonialText = testmonialText + `\n\n\n<div class="swiper-slide">
               <div class="testimonial-item">
-                <img src="${img}" class="testimonial-img" alt="">
+                <img src="${img}" class="testimonial-img" alt="" onerror="this.src='assets/img/user.png';">
                 <h3>${testmonial.name}</h3>
                 <h4>${testmonial.role ? testmonial.role : 'Unknown'}</h4>
                 <p>
