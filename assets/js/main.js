@@ -7,6 +7,7 @@
 
 
 const _API = 'https://wb-be-app.herokuapp.com/';
+let swiper;
 
 (function () {
   "use strict";
@@ -238,7 +239,7 @@ const _API = 'https://wb-be-app.herokuapp.com/';
   /**
    * Testimonials slider
    */
-  new Swiper('.testimonials-slider', {
+  swiper = new Swiper('.testimonials-slider', {
     speed: 600,
     loop: true,
     autoplay: {
@@ -303,10 +304,9 @@ const getTestmonials = () => {
         console.error("Error while getting testimonials::::::\n", resp);
       } else {
         testimonialsList = resp.data;
-        let testmonialText = "";
         testimonialsList.forEach(testmonial => {
           const img = testmonial?.img !== undefined && testmonial?.img !== null && testmonial?.img?.length > 0 && (testmonial?.img?.includes('jpeg') || testmonial?.img?.includes('png') || testmonial?.img?.includes('jpg')) ? testmonial.img : "assets/img/user.png";
-          testmonialText = testmonialText + `\n\n\n<div class="swiper-slide">
+          swiper.appendSlide(`<div class="swiper-slide">
               <div class="testimonial-item">
                 <img src="${img}" class="testimonial-img" alt="" onerror="this.src='assets/img/user.png';">
                 <h3>${testmonial.name}</h3>
@@ -317,9 +317,8 @@ const getTestmonials = () => {
                   <i class="bx bxs-quote-alt-right quote-icon-right"></i>
                 </p>
               </div>
-            </div>`;
+            </div>`);
         });
-        testmonialsWrapper.innerHTML = testmonialText;
       }
     }, err => {
       console.error("Error while getting testimonials::::::\n", err);
