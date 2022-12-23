@@ -1,4 +1,5 @@
-const _API = 'https://wb-be-app.herokuapp.com/';
+// const _API = 'https://wb-be-app.herokuapp.com/'; 
+const _API = 'http://localhost:8080/api/';
 let swiper;
 
 (function () {
@@ -288,17 +289,17 @@ getDifferenceInDates();
  */
 
 const getTestmonials = () => {
-  const url = _API + "testimonial";
+  const url = _API + "testimonial/list";
   fetch(url)
     .then(res => res.json())
     .then(resp => {
       if (resp?.status !== 200 && resp?.ok === false) {
         console.error("Error while getting testimonials::::::\n", resp);
       } else {
-        testimonialsList = resp.data;
-        testimonialsList.forEach(testmonial => {
+        testimonialsList = resp.testimonials;
+        testimonialsList.forEach((testmonial, index) => {
           const img = testmonial?.img !== undefined && testmonial?.img !== null && testmonial?.img?.length > 0 && (testmonial?.img?.includes('jpeg') || testmonial?.img?.includes('png') || testmonial?.img?.includes('jpg')) ? testmonial.img : "assets/img/user.png";
-          swiper.appendSlide(`<div class="swiper-slide">
+          swiper.appendSlide(`<div class="swiper-slide" data-swiper-slide-index="${index + 1}" role="group" aria-label="${index + 1} / ${testimonialsList}">
               <div class="testimonial-item">
                 <img src="${img}" class="testimonial-img" alt="" onerror="this.src='assets/img/user.png';">
                 <h3>${testmonial.name}</h3>
@@ -330,6 +331,7 @@ function addTestmonials() {
   let testmonialImg = document.getElementById('testimonial-img');
   let testmonialComment = document.getElementById('testimonial-comment');
   let testmonialRole = document.getElementById('testimonial-role');
+  let addTestmonialBtn = document.getElementById('add-testmonial');
   if (testmonialName.value === null || testmonialName.value === undefined || testmonialName.value.length <= 0) {
     alert("Enter your name.");
     return;
@@ -346,6 +348,7 @@ function addTestmonials() {
     role: testmonialRole.value || "Unknown"
   };
 
+  addTestmonialBtn.setAttribute('disabled', 'true');
   fetch(_API + 'testimonial/add', {
     method: 'POST',
     headers: {
@@ -360,13 +363,20 @@ function addTestmonials() {
     testmonialComment.value = "";
     testmonialRole.value = "";
 
+    addTestmonialBtn.removeAttribute('disabled');
+
     let closeBtn = document.getElementById('close');
     closeBtn.click();
 
+
+
     // window.location.reload();
 
-    window.location.replace("https://teja8352.github.io#testimonials");
-  }).catch(e => console.error("Exception while adding testimonial::::::::::\n", e))
+    // window.location.replace("https://teja8352.github.io#testimonials");
+  }).catch(e => {
+    addTestmonialBtn.removeAttribute('disabled');
+    console.error("Exception while adding testimonial::::::::::\n", e)
+  });
 };
 
 function sendMail() {
@@ -375,6 +385,7 @@ function sendMail() {
   let subject = document.getElementById('subject');
   let message = document.getElementById('message');
   const contactUsToast = document.getElementById('contact-us-toast');
+  const sendMailBtn = document.getElementById('send-mail');
   if (name.value === null || name.value === undefined || name.value.length <= 0) {
     alert("Enter your name.");
     return;
@@ -391,6 +402,7 @@ function sendMail() {
     message: message.value || "",
   };
 
+  sendMailBtn.setAttribute('disabled', 'true');
   fetch(_API + 'send-mail', {
     method: 'POST',
     headers: {
@@ -399,13 +411,17 @@ function sendMail() {
     },
     body: JSON.stringify(body)
   }).then(res => res.json()).then(resp => {
+
     name.value = "";
     email.value = "";
     subject.value = "";
     message.value = "";
 
-    const toast = new bootstrap.Toast(contactUsToast)
-
+    sendMailBtn.removeAttribute('disabled');
+    const toast = new bootstrap.Toast(contactUsToast);
     toast.show()
-  }).catch(e => console.error("Exception while adding testimonial::::::::::\n", e))
+  }).catch(e => {
+    sendMailBtn.removeAttribute('disabled');
+    console.error("Exception while adding testimonial::::::::::\n", e)
+  });
 };
