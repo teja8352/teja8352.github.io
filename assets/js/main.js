@@ -1,5 +1,5 @@
-// const _API = 'https://wb-be-app.herokuapp.com/'; 
-const _API = 'http://localhost:8080/api/';
+const _API = 'http://ec2-3-110-102-41.ap-south-1.compute.amazonaws.com:8080/api/';
+// const _API = 'http://localhost:8080/api/';
 let swiper;
 
 (function () {
