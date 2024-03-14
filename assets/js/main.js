@@ -266,6 +266,22 @@ let swiper;
 
 })();
 
+document.addEventListener('DOMContentLoaded', function () {
+  const calculateAge = (birthDate, currentDate) => {
+    const ageMs = currentDate - birthDate;
+    const ageYears = Math.floor(ageMs / (1000 * 60 * 60 * 24 * 365.25));
+    return ageYears;
+  };
+
+  const birthDate = new Date('1994-12-01');
+  const currentDate = new Date();
+  const age = calculateAge(birthDate, currentDate);
+  document.getElementById('my-age').innerText = age;
+});
+
+
+
+
 let testimonialsList = [];
 let testmonialsWrapper = document.getElementById('testmonials-wrapper');  /**
    * Date calucaltor - To get difference from to dates.
