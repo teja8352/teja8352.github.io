@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Ionic Angular + Capacitor Back Button Service</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Ionic Angular + Capacitor Back Button Service">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome JS-->
+    <script defer src="assets/fontawesome/js/all.min.js"></script>
+
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.2/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="assets/plugins/simplelightbox/simple-lightbox.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme.css">
+
+    <style>
+        .cursor-pointer {
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body class="docs-page">
+    <header class="header fixed-top">
+        <div class="branding docs-branding">
+            <div class="container-fluid position-relative py-2">
+                <div class="docs-logo-wrapper">
+                    <button id="docs-sidebar-toggler" class="docs-sidebar-toggler docs-sidebar-visible me-2 d-xl-none"
+                        type="button">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div class="site-logo"><a class="navbar-brand" href="#"><span class="logo-text">Ionic Angular +
+                                Capacitor
+                                <span class="text-alt">Back Button Service</span></span>
+                        </a></div>
+                </div><!--//docs-logo-wrapper-->
+                <div class="docs-top-utilities d-flex justify-content-end align-items-center">
+                    <a href="/" class="btn btn-primary d-none d-lg-flex">
+                        My Portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <main class="container border rounded bg-white mb-5">
+        <div class="docs-header pt-4 pt-md-5">
+            <h1 class="header-title">Ionic Angular + Capacitor Back Button Service</h1>
+            <p class="header-subtitle">A custom back button service for Ionic Angular applications using Capacitor.</p>
+        </div>
+
+        <div class="">
+            <p>In this blog post, we will create a custom back button service for Ionic Angular applications using
+                Capacitor. This service will allow us to handle the hardware back button on Android devices and provide
+                a consistent user experience across different platforms.</p>
+
+            <h2>Creating the Back Button Service</h2>
+            <pre><code class="language-html">src/app/app.component.ts:</code></pre>
+            <pre><code class="language-javascript">export class AppComponent implements AfterViewInit {
+    constructor(private backButtonService: BackButtonService) {}
+
+    ngAfterViewInit(): void {
+        this.backButtonService.registerRouterOutlet();
+    }
+}</code>
+            </pre>
+            <pre><code class="language-html">src/app/services/back-button.service.ts:</code></pre>
+            <pre><code class="language-javascript">import { Injectable } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { App } from '@capacitor/app';
+import {
+  ActionSheetController,
+  AlertController,
+  LoadingController,
+  ModalController,
+  Platform,
+  PopoverController,
+} from '@ionic/angular/standalone';
+import { filter } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class BackButtonService {
+  private initialized = false;
+  private history: string[] = [];
+  private isGoingBack = false;
+
+  constructor(
+    private platform: Platform,
+    private router: Router,
+    private modalController: ModalController,
+    private alertController: AlertController,
+    private loadingController: LoadingController,
+    private actionSheetController: ActionSheetController,
+    private popoverController: PopoverController,
+  ) {}
+
+  registerRouterOutlet(): void {
+    if (!this.initialized) {
+      this.initialize();
+      this.initialized = true;
+    }
+  }
+
+  private initialize(): void {
+    this.history = [this.router.url];
+    this.router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd,
+        ),
+      )
+      .subscribe((event) => {
+        if (this.isGoingBack) {
+          this.isGoingBack = false;
+          return;
+        }
+
+        const url = event.urlAfterRedirects;
+        const last = this.history[this.history.length - 1];
+        if (last !== url) {
+          this.history.push(url);
+        }
+      });
+
+    this.platform.backButton.subscribeWithPriority(10000, () => {
+      void this.handleBackButton();
+    });
+  }
+
+  private async handleBackButton(): Promise<void> {
+    const loading = await this.loadingController.getTop();
+    if (loading && this.hasNoBackButtonClass(loading)) {
+      return;
+    }
+
+    const activeOverlay = await this.getActiveOverlay();
+    if (activeOverlay) {
+      await activeOverlay.dismiss();
+      return;
+    }
+
+    console.error('history', this.history);
+    if (this.history.length > 1) {
+      this.isGoingBack = true;
+      this.history.pop();
+      const target = this.history[this.history.length - 1];
+      console.error('target', target);
+      if (target === '/') {
+        await App.exitApp();
+        return;
+      }
+      await this.router.navigateByUrl(target, { replaceUrl: true });
+      return;
+    }
+
+    await App.exitApp();
+  }
+
+  private async getActiveOverlay(): Promise<
+    | HTMLIonModalElement
+    | HTMLIonAlertElement
+    | HTMLIonLoadingElement
+    | HTMLIonActionSheetElement
+    | HTMLIonPopoverElement
+    | undefined
+  > {
+    return (
+      (await this.modalController.getTop()) ??
+      (await this.popoverController.getTop()) ??
+      (await this.alertController.getTop()) ??
+      (await this.actionSheetController.getTop()) ??
+      (await this.loadingController.getTop()) ??
+      undefined
+    );
+  }
+
+  private hasNoBackButtonClass(loading: HTMLIonLoadingElement): boolean {
+    return (loading as HTMLElement).classList.contains('no-back-button');
+  }
+}
+</code></pre>
+
+    </main>
+
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+
+    <!-- Page Specific JS -->
+    <script src="assets/plugins/smoothscroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script src="assets/js/highlight-custom.js"></script>
+    <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>
+    <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script>
+    <script src="assets/js/docs.js"></script>
+
+</body>
+
+</html>
