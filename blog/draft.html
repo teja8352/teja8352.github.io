@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Draft</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Ionic Angular + Capacitor Back Button Service">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome JS-->
+    <script defer src="assets/fontawesome/js/all.min.js"></script>
+
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.2/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="assets/plugins/simplelightbox/simple-lightbox.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme.css">
+
+    <style>
+        .cursor-pointer {
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body class="docs-page">
+    <header class="header fixed-top">
+        <div class="branding docs-branding">
+            <div class="container-fluid position-relative py-2">
+                <div class="docs-logo-wrapper">
+                    <button id="docs-sidebar-toggler" class="docs-sidebar-toggler docs-sidebar-visible me-2 d-xl-none"
+                        type="button">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div class="site-logo"><a class="navbar-brand" href="#"><span class="logo-text">Draft
+                                <span class="text-alt">Code</span></span>
+                        </a></div>
+                </div><!--//docs-logo-wrapper-->
+                <div class="docs-top-utilities d-flex justify-content-end align-items-center">
+                    <a href="/" class="btn btn-primary d-none d-lg-flex">
+                        My Portfolio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <main class="container border rounded bg-white mb-5">
+        <div class="docs-header pt-4 pt-md-5">
+            <h1 class="header-title">Draft Code</h1>
+            <p class="header-subtitle">some draft code educational purpose</p>
+        </div>
+
+        <div class="">
+            <p></p>
+
+            <h2>Some heading comes here</h2>
+            <pre><code class="language-html">app-button.component.ts:</code></pre>
+            <pre><code class="language-javascript">import { Component, Input, Output, EventEmitter } from '@angular/core';
+            import { IonicModule } from '@ionic/angular';
+            import { CommonModule } from '@angular/common';
+            
+            @Component({
+            selector: 'app-button',
+            standalone: true,
+            imports: [CommonModule, IonicModule],
+            templateUrl: './app-button.component.html',
+            styleUrls: ['./app-button.component.scss'],
+            })
+            export class AppButtonComponent {
+            @Input() variant: 'primary' | 'secondary' | 'danger' | 'outline' = 'primary';
+            @Input() size: 'small' | 'medium' | 'large' = 'medium';
+            @Input() radius: 'none' | 'sm' | 'md' | 'lg' | 'full' = 'md';
+            
+            @Input() leftIcon?: string;
+            @Input() rightIcon?: string;
+            
+            @Input() spinner: boolean = false;
+            @Input() disabled: boolean = false;
+            
+            @Input() role?: string;
+            @Input() ariaLabel?: string;
+            
+            @Output() buttonClick = new EventEmitter<Event>();
+            
+                handleClick(event: Event) {
+                if (!this.disabled && !this.spinner) {
+                this.buttonClick.emit(event);
+                }
+                }
+            
+                get classes(): string[] {
+                return [
+                `variant-${this.variant}`,
+                `size-${this.size}`,
+                `radius-${this.radius}`,
+                ];
+                }
+                }
+}</code>
+            </pre>
+            <pre><code class="language-html">app-button.component.html:</code></pre>
+            <pre><code class="language-html"><ion-button [disabled]="disabled || spinner" [ngClass]="classes" (click)="handleClick($event)" [attr.role]="role"
+                [attr.aria-label]="ariaLabel" expand="block">
+                <ng-container *ngIf="spinner">
+                    <ion-spinner name="crescent"></ion-spinner>
+                </ng-container>
+            
+                <ng-container *ngIf="!spinner">
+                    <ion-icon *ngIf="leftIcon" [name]="leftIcon" slot="start"></ion-icon>
+            
+                    <ng-content></ng-content>
+            
+                    <ion-icon *ngIf="rightIcon" [name]="rightIcon" slot="end"></ion-icon>
+                </ng-container>
+            </ion-button></code>
+            </pre>
+
+            <pre><code class="language-html">Usage:</code></pre>
+            <pre><code class="language-html"><app-button (buttonClick)="save()">
+                        Save
+                    </app-button>
+                    <app-button variant="primary">Primary</app-button>
+                    <app-button variant="secondary">Secondary</app-button>
+                    <app-button variant="danger">Delete</app-button>
+                    <app-button variant="outline">Outline</app-button>
+                    <app-button size="small">Small</app-button>
+                    <app-button size="medium">Medium</app-button>
+                    <app-button size="large">Large</app-button>
+                    <app-button radius="none">Square</app-button>
+                    <app-button radius="sm">Slight Round</app-button>
+                    <app-button radius="md">Medium Round</app-button>
+                    <app-button radius="lg">Rounded</app-button>
+                    <app-button radius="full">Pill</app-button>
+                    <app-button leftIcon="add">Add Item</app-button>
+                    
+                    <app-button rightIcon="arrow-forward">
+                        Continue
+                    </app-button>
+                    
+                    <app-button leftIcon="cart" rightIcon="chevron-forward">
+                        Checkout
+                    </app-button>
+                    <app-button [spinner]="true">
+                        Processing...
+                    </app-button>
+                    <app-button [disabled]="true">
+                        Disabled Button
+                    </app-button>
+                    <app-button [spinner]="isSaving" [disabled]="isSaving" (buttonClick)="handleSave()">
+                        {{ isSaving ? 'Saving...' : 'Save Changes' }}
+                    </app-button>
+                    <app-button ariaLabel="Submit form" role="button">
+                        Submit
+                    </app-button>
+                    <app-button variant="primary" size="large" radius="full" leftIcon="cart" (buttonClick)="addToCart()">
+                        Add to Cart
+                    </app-button>
+                    <app-button variant="danger" leftIcon="trash" (buttonClick)="deleteItem()">
+                        Delete
+                    </app-button>
+                    <app-button radius="full" size="small" ariaLabel="Settings" leftIcon="settings">
+                    </app-button>
+
+                    <app-button variant="primary" size="large" radius="full" leftIcon="add" (buttonClick)="onClick()">
+                        Add Item
+                    </app-button>
+                    
+                    <app-button variant="outline" [spinner]="true">
+                        Loading
+                    </app-button>
+                    
+                    <app-button variant="danger" rightIcon="trash" ariaLabel="Delete item">
+                        Delete
+                    </app-button>
+
+                </code>
+            </pre>
+
+            <pre><code class="language-html">app-button.stories.ts:</code></pre>
+            <pre><code class="language-javascript">import { Meta, StoryObj, applicationConfig } from '@storybook/angular';
+            import { action } from '@storybook/addon-actions';
+            
+            import { AppButtonComponent } from './app-button.component';
+            
+            const meta: Meta<AppButtonComponent> = {
+                title: 'Components/Button',
+                component: AppButtonComponent,
+                tags: ['autodocs'],
+            
+                decorators: [
+                applicationConfig({
+                providers: [],
+                }),
+                ],
+            
+                argTypes: {
+                variant: {
+                control: 'select',
+                options: ['primary', 'secondary', 'danger', 'outline'],
+                },
+                size: {
+                control: 'select',
+                options: ['small', 'medium', 'large'],
+                },
+                radius: {
+                control: 'select',
+                options: ['none', 'sm', 'md', 'lg', 'full'],
+                },
+                leftIcon: { control: 'text' },
+                rightIcon: { control: 'text' },
+                spinner: { control: 'boolean' },
+                disabled: { control: 'boolean' },
+                role: { control: 'text' },
+                ariaLabel: { control: 'text' },
+                buttonClick: { table: { disable: true } },
+                },
+                };
+            
+                export default meta;
+                type Story = StoryObj<AppButtonComponent>;
+            
+            
+                    export const PrimaryLargeWithIcon: Story = {
+                    render: () => ({
+                    props: {
+                    onClick: action('clicked'),
+                    },
+                    template: `
+                    <app-button variant="primary" size="large" radius="full" leftIcon="cart" (buttonClick)="onClick($event)">
+                        Add to Cart
+                    </app-button>
+                    `,
+                    }),
+                    };
+            
+            
+                    export const LoadingPrimaryDisabled: Story = {
+                    render: () => ({
+                    props: {
+                    loading: true,
+                    },
+                    template: `
+                    <app-button variant="primary" size="large" [spinner]="loading" [disabled]="loading">
+                        Processing Payment
+                    </app-button>
+                    `,
+                    }),
+                    };
+            
+            
+                    export const AsyncWithIcon: Story = {
+                    render: () => ({
+                    props: {
+                    loading: false,
+                    handleClick(this: any) {
+                    this.loading = true;
+                    setTimeout(() => (this.loading = false), 2000);
+                    },
+                    },
+                    template: `
+                    <app-button variant="secondary" leftIcon="refresh" [spinner]="loading" (buttonClick)="handleClick()">
+                        {{ loading ? 'Refreshing...' : 'Refresh Data' }}
+                    </app-button>
+                    `,
+                    }),
+                    };
+            
+            
+                    export const ToggleWithIconVariant: Story = {
+                    render: () => ({
+                    props: {
+                    active: false,
+                    toggle(this: any) {
+                    this.active = !this.active;
+                    },
+                    },
+                    template: `
+                    <app-button size="medium" radius="full" leftIcon="heart" [variant]="active ? 'primary' : 'outline'"
+                        (buttonClick)="toggle()">
+                        {{ active ? 'Liked' : 'Like' }}
+                    </app-button>
+                    `,
+                    }),
+                    };
+            
+            
+                    export const DangerWithIconLarge: Story = {
+                    render: () => ({
+                    props: {
+                    onDelete: action('delete'),
+                    },
+                    template: `
+                    <app-button variant="danger" size="large" leftIcon="trash" (buttonClick)="onDelete($event)">
+                        Delete Item
+                    </app-button>
+                    `,
+                    }),
+                    };
+            
+            
+                    export const SubmitWithSpinnerAndRole: Story = {
+                    render: () => ({
+                    props: {
+                    submitting: false,
+                    submit(this: any) {
+                    this.submitting = true;
+                    setTimeout(() => (this.submitting = false), 1500);
+                    },
+                    },
+                    template: `
+                    <form (ngSubmit)="submit()">
+                        <app-button variant="primary" size="large" radius="md" role="submit" [spinner]="submitting">
+                            {{ submitting ? 'Submitting...' : 'Submit Form' }}
+                        </app-button>
+                    </form>
+                    `,
+                    }),
+                    };
+            
+            
+                    export const DisabledOutlineWithIcon: Story = {
+                    render: () => ({
+                    template: `
+                    <app-button variant="outline" leftIcon="lock-closed" [disabled]="true">
+                        Restricted Access
+                    </app-button>
+                    `,
+                    }),
+                    };
+            
+            
+                    export const NavigationWithIcons: Story = {
+                    render: () => ({
+                    props: {
+                    onClick: action('navigate'),
+                    },
+                    template: `
+                    <app-button variant="primary" size="medium" leftIcon="home" rightIcon="chevron-forward"
+                        (buttonClick)="onClick($event)">
+                        Go to Dashboard
+                    </app-button>
+                    `,
+                    }),
+                    };
+            
+            
+                    export const EventWithAllProps: Story = {
+                    render: () => ({
+                    props: {
+                    onClick: action('buttonClick event'),
+                    },
+                    template: `
+                    <app-button variant="secondary" size="large" radius="lg" leftIcon="flash" rightIcon="arrow-forward"
+                        ariaLabel="Perform action" (buttonClick)="onClick($event)">
+                        Trigger Action
+                    </app-button>
+                    `,
+                    }),
+};</code>
+            </pre>
+    </main>
+
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+
+    <!-- Page Specific JS -->
+    <script src="assets/plugins/smoothscroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.8/highlight.min.js"></script>
+    <script src="assets/js/highlight-custom.js"></script>
+    <script src="assets/plugins/simplelightbox/simple-lightbox.min.js"></script>
+    <script src="assets/plugins/gumshoe/gumshoe.polyfills.min.js"></script>
+    <script src="assets/js/docs.js"></script>
+
+</body>
+
+</html>
