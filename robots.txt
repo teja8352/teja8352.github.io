@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://kteja.dev
+Sitemap: https://kteja.dev/sitemap.xml

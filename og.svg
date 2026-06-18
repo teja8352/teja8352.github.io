@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef2ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="64" y="64" width="40" height="40" rx="6" fill="#0F172A"/>
+  <text x="84" y="93" font-family="Arial, sans-serif" font-size="22" font-weight="700" fill="#fff" text-anchor="middle">K</text>
+  <text x="120" y="94" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#0F172A" letter-spacing="2">K. TEJA</text>
+  <text x="64" y="300" font-family="Arial, sans-serif" font-size="64" font-weight="700" fill="#0F172A">Senior Full-Stack</text>
+  <text x="64" y="380" font-family="Arial, sans-serif" font-size="64" font-weight="700" fill="#4F46E5">&amp; Mobile Engineer</text>
+  <text x="64" y="460" font-family="Arial, sans-serif" font-size="28" font-weight="500" fill="#475569">Turning visions into high-performance digital products.</text>
+</svg>
